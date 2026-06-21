@@ -1,8 +1,9 @@
 package com.amir.taskmanager;
 
+import com.amir.taskmanager.enums.TaskStatus;
 import com.amir.taskmanager.model.Project;
-import com.amir.taskmanager.model.Task;
 import com.amir.taskmanager.model.User;
+import com.amir.taskmanager.service.TaskService;
 
 public class Main {
     public static void main(String[] args) {
@@ -10,21 +11,20 @@ public class Main {
 
         Project project = new Project(1L, "Migration Project", user);
 
-        Task t1 = new Task(1L, "Learn Spring Boot", "Backend framework");
-        Task t2 = new Task(2L, "Learn Docker", "containerization");
-        Task t3 = new Task(3L, "Deploy AWS", "Cloud deployment");
+        TaskService taskService = new TaskService(project);
 
-        project.addTask(t1);
-        project.addTask(t2);
-        project.addTask(t3);
+        taskService.createTask(1L, "Learn Spring Boot", "Backend");
+        taskService.createTask(2L, "Learn Docker", "Containers");
+        taskService.createTask(3L, "Deploy AWS", "Cloud");
 
-        t1.markDone();
-        t2.makeInProgress();
+        taskService.changeStatus(1L, TaskStatus.DONE);
 
-        user.addProject(project);
+        System.out.println("All Tasks:");
+        taskService.getAllTasks().forEach(System.out::println);
 
-        System.out.println("Complete Tasks:");
+        System.out.println("\nComplete Tasks:");
         project.getCompleteTasks().forEach(System.out::println);
+
 
     }
 }

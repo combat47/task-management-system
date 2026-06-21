@@ -16,7 +16,7 @@ public class Task {
         this.status = TaskStatus.TODO; //default
     }
 
-    public void makeInProgress() {
+    public void markInProgress() {
         this.status = TaskStatus.IN_PROGRESS;
     }
 

@@ -27,7 +27,7 @@ public class Project {
         tasks.remove(task);
     }
 
-    public List<Task> getTasks(Task task) {
+    public List<Task> getTasks() {
         return tasks;
     }
 
