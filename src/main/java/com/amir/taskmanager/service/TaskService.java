@@ -1,52 +1,87 @@
 package com.amir.taskmanager.service;
 
+import com.amir.taskmanager.dto.CreateTaskRequest;
+import com.amir.taskmanager.dto.UpdateTaskRequest;
 import com.amir.taskmanager.enums.TaskStatus;
-import com.amir.taskmanager.model.Project;
 import com.amir.taskmanager.model.Task;
-
+import com.amir.taskmanager.repository.TaskRepository;
+import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.Optional;
 
+@Service
 public class TaskService {
-    private final Project project;
 
+    private final TaskRepository taskRepository;
 
-    public TaskService(Project project) {
-        this.project = project;
+    public TaskService(TaskRepository taskRepository) {
+        this.taskRepository = taskRepository;
     }
 
-    // Create Task
-    public Task createTask(Long id, String title, String description) {
-        Task task = new Task(id, title, description);
-        project.addTask(task);
-        return task;
+    // CREATE
+    public Task createTask(CreateTaskRequest request) {
+
+        Task task = new Task(
+                request.title(),
+                request.description()
+        );
+
+        return taskRepository.save(task);
     }
 
-    // Get all tasks
+    // READ ALL
     public List<Task> getAllTasks() {
-        return project.getTasks();
+        return taskRepository.findAll();
     }
 
-    // Find by ID
-    public Optional<Task> getTaskById(Long id) {
-        return project.getTasks().stream()
-                .filter(t -> t.getId().equals(id))
-                .findFirst();
+
+    public Task getTaskById(Long id) {
+        return taskRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Task not found")
+                );
     }
 
-    // Change Status
-    public void changeStatus(Long taskId, TaskStatus status) {
-        getTaskById(taskId).ifPresent(task -> {
-            switch (status) {
-                case TODO, IN_PROGRESS -> task.markInProgress();
-                case DONE -> task.markDone();
-            }
-        });
+    public Task updateTask(Long id, UpdateTaskRequest request) {
+
+        Task task = getTaskById(id);
+        task.setTitle(request.title());
+        task.setDescription(request.description());
+
+        return taskRepository.save(task);
     }
 
-    // Delete task
-    public void deleteTask(Long id) {
-        getTaskById(id).ifPresent(task -> project.getTasks().remove(task));
+
+    public void deleteTask (Long id) {
+        taskRepository.deleteById(id);
     }
 
+
+    public Task markTaskDone(Long id) {
+
+        Task task = getTaskById(id);
+
+        task.markDone();
+
+        return taskRepository.save(task);
+    }
+
+    public Task markTaskInProgress(Long id) {
+
+        Task task = getTaskById(id);
+
+        task.markInProgress();
+
+        return taskRepository.save(task);
+    }
+
+
+    public Task markTaskTodo(Long id) {
+
+        Task task = getTaskById(id);
+
+        task.setStatus(TaskStatus.TODO);
+
+        return taskRepository.save(task);
+
+    }
 }

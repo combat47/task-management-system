@@ -1,76 +1,69 @@
 package com.amir.taskmanager.controller;
 
+import com.amir.taskmanager.dto.CreateTaskRequest;
+import com.amir.taskmanager.dto.UpdateTaskRequest;
 import com.amir.taskmanager.model.Project;
 import com.amir.taskmanager.model.Task;
 import com.amir.taskmanager.model.User;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import com.amir.taskmanager.service.TaskService;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 public class TaskController {
 
-    @GetMapping("/")
-    public String home() {
-        return "Task Manager API";
-    }
+    private final TaskService taskService;
 
-    @GetMapping("/hello")
-    public String hello() {
-        return "Hello Combat47";
-    }
 
-    @GetMapping("/task")
-    public Task getTask() {
-        return new Task(
-                1L,
-                "Learn Spring Boot",
-                "Rest API"
-        );
+    // Dependency Injection
+    public TaskController(TaskService taskService) {
+        this.taskService = taskService;
     }
 
     @GetMapping("/tasks")
     public List<Task> getTasks() {
-        return List.of(
-                new Task(1L, "Spring Boot", "Backend"),
-                new Task(2L, "Docker", "Containers"),
-                new Task(3L, "AWS", "Cloud")
-        );
+        return taskService.getAllTasks();
     }
 
-    @GetMapping("/projects")
-    public List<Project> getProjects() {
-
-        User amir = new User(1L, "Amir");
-        User bob = new User(2L, "Bob");
-
-        Project project1 =
-                new Project(
-                        101L,
-                        "Spring Boot API",
-                        amir
-                );
-
-        Project project2 =
-                new Project(
-                        102L,
-                        "Docker Deployment",
-                        bob
-                );
-
-        return List.of(project1, project2);
+    @PostMapping("/tasks")
+    public Task createTask(
+            @RequestBody CreateTaskRequest request
+    ) {
+        return taskService.createTask(request);
     }
 
-    @GetMapping("/projects/{id}")
-    public Project getProject(@PathVariable Long id) {
-        User amir = new User(1L, "Amir");
-
-        return new Project(
-                id,
-                "Spring Boot API",
-                amir
-        );
+    @GetMapping("/tasks/{id}")
+    public Task getTaskById(@PathVariable Long id) {
+        return taskService.getTaskById(id);
     }
+
+    @PutMapping("/tasks/{id}")
+    public Task updateTask(
+            @PathVariable Long id,
+            @RequestBody UpdateTaskRequest request
+    ) {
+        return taskService.updateTask(id, request);
+    }
+
+    @DeleteMapping("/tasks/{id}")
+    public void deleteTask(@PathVariable Long id) {
+        taskService.deleteTask(id);
+    }
+
+    @PatchMapping("/tasks/{id}/done")
+    public Task markTaskDone(@PathVariable Long id) {
+        return taskService.markTaskDone(id);
+    }
+
+    @PatchMapping("/tasks/{id}/start")
+    public Task markTaskInProgress(@PathVariable Long id) {
+        return taskService.markTaskInProgress(id);
+    }
+
+    @PatchMapping("/tasks/{id}/todo")
+    public Task markTaskTodo(@PathVariable Long id) {
+        return taskService.markTaskTodo(id);
+    }
+
 }
