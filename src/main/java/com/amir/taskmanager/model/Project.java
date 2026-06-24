@@ -5,13 +5,28 @@ import com.amir.taskmanager.enums.TaskStatus;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.*;
+
+@Entity
 public class Project {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
+
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
     private User owner;
 
+    @OneToMany(mappedBy = "project")
     private List<Task> tasks = new ArrayList<>();
 
+
+    public Project() {
+
+    }
 
     public Project(Long id, String name, User owner) {
         this.id = id;
@@ -48,7 +63,7 @@ public class Project {
         return name;
     }
 
-    public User getOwner() {
-        return owner;
-    }
+//    public User getOwner() {
+//        return owner;
+//    }
 }

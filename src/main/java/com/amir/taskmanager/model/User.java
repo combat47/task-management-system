@@ -1,15 +1,27 @@
 package com.amir.taskmanager.model;
 
+import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name = "users")
 public class User {
+
+    @Id
+    @GeneratedValue
     private Long id;
+
     private String name;
+
+    @OneToMany(mappedBy = "owner")
     private List<Project> projects = new ArrayList<>();
 
-    public User(Long id, String name) {
-        this.id = id;
+    public User() {
+
+    }
+
+    public User(String name) {
         this.name = name;
     }
 
@@ -17,17 +29,22 @@ public class User {
         projects.add(project);
     }
 
+
+    //getters
     public List<Project> getProjects() {
         return projects;
     }
 
-
-    //getters
     public Long getId() {
         return id;
     }
 
     public String getName() {
         return name;
+    }
+
+    //setters
+    public void setName() {
+        this.name = name;
     }
 }

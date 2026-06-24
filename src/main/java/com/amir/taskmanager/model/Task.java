@@ -1,6 +1,7 @@
 package com.amir.taskmanager.model;
 
 import com.amir.taskmanager.enums.TaskStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -14,6 +15,11 @@ public class Task {
 
     @Enumerated(EnumType.STRING)
     private TaskStatus status;
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "project_id")
+    private Project project;
 
     public Task() {
 
@@ -66,5 +72,13 @@ public class Task {
     @Override
     public String toString() {
         return title + " [" + status + "]";
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
     }
 }

@@ -3,7 +3,9 @@ package com.amir.taskmanager.service;
 import com.amir.taskmanager.dto.CreateTaskRequest;
 import com.amir.taskmanager.dto.UpdateTaskRequest;
 import com.amir.taskmanager.enums.TaskStatus;
+import com.amir.taskmanager.model.Project;
 import com.amir.taskmanager.model.Task;
+import com.amir.taskmanager.repository.ProjectRepository;
 import com.amir.taskmanager.repository.TaskRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -13,17 +15,28 @@ public class TaskService {
 
     private final TaskRepository taskRepository;
 
-    public TaskService(TaskRepository taskRepository) {
+    private final ProjectRepository projectRepository;
+
+    public TaskService(TaskRepository taskRepository, ProjectRepository projectRepository) {
         this.taskRepository = taskRepository;
+
+        this.projectRepository = projectRepository;
     }
 
     // CREATE
     public Task createTask(CreateTaskRequest request) {
 
+        Project project = projectRepository.findById(
+                request.projectId()
+        ).orElseThrow(() ->
+                new RuntimeException("Project not found"));
+
         Task task = new Task(
                 request.title(),
                 request.description()
         );
+
+        task.setProject(project);
 
         return taskRepository.save(task);
     }
