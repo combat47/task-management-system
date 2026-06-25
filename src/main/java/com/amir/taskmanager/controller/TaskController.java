@@ -8,6 +8,7 @@ import com.amir.taskmanager.model.Task;
 import com.amir.taskmanager.model.User;
 import com.amir.taskmanager.service.TaskService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,6 +40,30 @@ public class TaskController {
     @GetMapping("/tasks/{id}")
     public TaskResponse getTaskById(@PathVariable Long id) {
         return taskService.getTaskResponseById(id);
+    }
+
+    @GetMapping("/tasks/page")
+    public Page<Task> getTasksPage(
+            @RequestParam(defaultValue = "0")
+            int page,
+
+            @RequestParam(defaultValue = "5")
+            int size
+    ) {
+        return taskService.getTasksPage(page, size);
+    }
+
+    @GetMapping("/tasks/search")
+    public List<Task> searchTask(
+            @RequestParam
+            String title
+    ) {
+        return taskService.searchTask(title);
+    }
+
+    @GetMapping("/tasks/done")
+    public List<Task> getDoneTasks() {
+        return taskService.getDoneTasks();
     }
 
     @PutMapping("/tasks/{id}")

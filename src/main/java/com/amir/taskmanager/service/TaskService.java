@@ -11,6 +11,8 @@ import com.amir.taskmanager.repository.ProjectRepository;
 import com.amir.taskmanager.repository.TaskRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 @Service
 public class TaskService {
@@ -117,5 +119,21 @@ public class TaskService {
                 task.getDescription(),
                 task.getStatus()
         );
+    }
+
+    public Page<Task> getTasksPage(
+            int page,
+            int size
+    ) {
+        return taskRepository.findAll(PageRequest.of(page, size));
+    }
+
+    public List<Task> searchTask(String title) {
+
+        return taskRepository.findByTitleContainingIgnoreCase(title);
+    }
+
+    public List<Task> getDoneTasks() {
+        return taskRepository.findAllDoneTask();
     }
 }
