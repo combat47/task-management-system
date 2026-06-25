@@ -3,6 +3,7 @@ package com.amir.taskmanager.service;
 import com.amir.taskmanager.dto.CreateTaskRequest;
 import com.amir.taskmanager.dto.UpdateTaskRequest;
 import com.amir.taskmanager.enums.TaskStatus;
+import com.amir.taskmanager.exception.TaskNotFoundException;
 import com.amir.taskmanager.model.Project;
 import com.amir.taskmanager.model.Task;
 import com.amir.taskmanager.repository.ProjectRepository;
@@ -50,7 +51,7 @@ public class TaskService {
     public Task getTaskById(Long id) {
         return taskRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Task not found")
+                        new TaskNotFoundException(id)
                 );
     }
 
