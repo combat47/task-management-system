@@ -1,6 +1,7 @@
 package com.amir.taskmanager.service;
 
 import com.amir.taskmanager.dto.CreateTaskRequest;
+import com.amir.taskmanager.dto.TaskResponse;
 import com.amir.taskmanager.dto.UpdateTaskRequest;
 import com.amir.taskmanager.enums.TaskStatus;
 import com.amir.taskmanager.exception.TaskNotFoundException;
@@ -24,7 +25,7 @@ public class TaskService {
         this.projectRepository = projectRepository;
     }
 
-    // CREATE
+    // CREATE (CRUD)
     public Task createTask(CreateTaskRequest request) {
 
         Project project = projectRepository.findById(
@@ -42,7 +43,7 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
-    // READ ALL
+    // READ ALL (CRUD)
     public List<Task> getAllTasks() {
         return taskRepository.findAll();
     }
@@ -55,6 +56,14 @@ public class TaskService {
                 );
     }
 
+    public TaskResponse getTaskResponseById(Long id) {
+        Task task = getTaskById(id);
+
+        return mapToResponse(task);
+    }
+
+
+    // UPDATE (CRUD)
     public Task updateTask(Long id, UpdateTaskRequest request) {
 
         Task task = getTaskById(id);
@@ -65,6 +74,7 @@ public class TaskService {
     }
 
 
+    //DELETE (CRUD)
     public void deleteTask (Long id) {
         taskRepository.deleteById(id);
     }
@@ -97,5 +107,15 @@ public class TaskService {
 
         return taskRepository.save(task);
 
+    }
+
+    private TaskResponse mapToResponse(Task task) {
+
+        return new TaskResponse(
+                task.getId(),
+                task.getTitle(),
+                task.getDescription(),
+                task.getStatus()
+        );
     }
 }

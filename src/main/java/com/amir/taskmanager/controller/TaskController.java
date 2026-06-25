@@ -1,6 +1,7 @@
 package com.amir.taskmanager.controller;
 
 import com.amir.taskmanager.dto.CreateTaskRequest;
+import com.amir.taskmanager.dto.TaskResponse;
 import com.amir.taskmanager.dto.UpdateTaskRequest;
 import com.amir.taskmanager.model.Project;
 import com.amir.taskmanager.model.Task;
@@ -36,8 +37,8 @@ public class TaskController {
     }
 
     @GetMapping("/tasks/{id}")
-    public Task getTaskById(@PathVariable Long id) {
-        return taskService.getTaskById(id);
+    public TaskResponse getTaskById(@PathVariable Long id) {
+        return taskService.getTaskResponseById(id);
     }
 
     @PutMapping("/tasks/{id}")
