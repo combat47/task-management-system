@@ -6,6 +6,7 @@ import com.amir.taskmanager.model.Project;
 import com.amir.taskmanager.model.Task;
 import com.amir.taskmanager.model.User;
 import com.amir.taskmanager.service.TaskService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,6 +29,7 @@ public class TaskController {
 
     @PostMapping("/tasks")
     public Task createTask(
+            @Valid
             @RequestBody CreateTaskRequest request
     ) {
         return taskService.createTask(request);
