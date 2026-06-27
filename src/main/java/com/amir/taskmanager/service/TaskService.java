@@ -13,9 +13,15 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 @Service
 public class TaskService {
+
+    private static final Logger logger =
+            LoggerFactory.getLogger(TaskService.class);
 
     private final TaskRepository taskRepository;
 
@@ -42,6 +48,8 @@ public class TaskService {
 
         task.setProject(project);
 
+        logger.info("Creating task with title: {}", request.title());
+
         return taskRepository.save(task);
     }
 
@@ -52,10 +60,14 @@ public class TaskService {
 
 
     public Task getTaskById(Long id) {
+
+        logger.info("Fetching task with id {}", id);
+
         return taskRepository.findById(id)
-                .orElseThrow(() ->
-                        new TaskNotFoundException(id)
-                );
+                .orElseThrow(() -> {
+                    logger.warn("Task with id {} not found", id);
+                    return new TaskNotFoundException(id);
+                });
     }
 
     public TaskResponse getTaskResponseById(Long id) {
@@ -72,12 +84,15 @@ public class TaskService {
         task.setTitle(request.title());
         task.setDescription(request.description());
 
+        logger.info("Updating task {}", id);
+
         return taskRepository.save(task);
     }
 
 
     //DELETE (CRUD)
     public void deleteTask (Long id) {
+        logger.info("Deleting Task {}", id);
         taskRepository.deleteById(id);
     }
 
