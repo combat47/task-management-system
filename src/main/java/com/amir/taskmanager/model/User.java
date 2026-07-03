@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -12,7 +13,9 @@ public class User {
     @GeneratedValue
     private Long id;
 
-    private String name;
+    private String username;
+
+    private String password;
 
     @OneToMany(mappedBy = "owner")
     private List<Project> projects = new ArrayList<>();
@@ -21,8 +24,9 @@ public class User {
 
     }
 
-    public User(String name) {
-        this.name = name;
+    public User(String userName, String password) {
+        this.username = userName;
+        this.password = password;
     }
 
     public void addProject(Project project) {
@@ -39,12 +43,21 @@ public class User {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+
     //setters
-    public void setName() {
-        this.name = name;
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
