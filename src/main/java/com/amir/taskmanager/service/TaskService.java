@@ -23,6 +23,7 @@ public class TaskService {
     private static final Logger logger =
             LoggerFactory.getLogger(TaskService.class);
 
+
     private final TaskRepository taskRepository;
 
     private final ProjectRepository projectRepository;
@@ -49,6 +50,7 @@ public class TaskService {
         task.setProject(project);
 
         logger.info("Creating task with title: {}", request.title());
+        logger.debug("Debug: createTask() called");
 
         return taskRepository.save(task);
     }

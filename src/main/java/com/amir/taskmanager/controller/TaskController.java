@@ -1,5 +1,7 @@
 package com.amir.taskmanager.controller;
 
+import com.amir.taskmanager.config.AppConfig;
+import com.amir.taskmanager.config.AppProperties;
 import com.amir.taskmanager.dto.CreateTaskRequest;
 import com.amir.taskmanager.dto.TaskResponse;
 import com.amir.taskmanager.dto.UpdateTaskRequest;
@@ -17,11 +19,12 @@ import java.util.List;
 public class TaskController {
 
     private final TaskService taskService;
-
+    private final AppProperties appProperties;
 
     // Dependency Injection
-    public TaskController(TaskService taskService) {
+    public TaskController(TaskService taskService, AppProperties appProperties) {
         this.taskService = taskService;
+        this.appProperties = appProperties;
     }
 
     @GetMapping("/tasks")
@@ -64,6 +67,11 @@ public class TaskController {
     @GetMapping("/tasks/done")
     public List<Task> getDoneTasks() {
         return taskService.getDoneTasks();
+    }
+
+    @GetMapping("/info")
+    public AppProperties getInfo() {
+        return appProperties;
     }
 
     @PutMapping("/tasks/{id}")
