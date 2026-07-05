@@ -1,6 +1,7 @@
 package com.amir.taskmanager.controller;
 
 import com.amir.taskmanager.dto.LoginRequest;
+import com.amir.taskmanager.service.JwtService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,8 +17,11 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
 
-    public AuthController(AuthenticationManager authenticationManager) {
+    private final JwtService jwtService;
+
+    public AuthController(AuthenticationManager authenticationManager, JwtService jwtService) {
         this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
     }
 
     @PostMapping("/login")
@@ -33,7 +37,7 @@ public class AuthController {
 
 
         if (authentication.isAuthenticated()) {
-            return "Login successful";
+            return jwtService.generateToken(request.username());
         }
 
         return "Login failed";

@@ -1,6 +1,9 @@
 package com.amir.taskmanager.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,20 +16,34 @@ public class User {
     @GeneratedValue
     private Long id;
 
+
+    @NotBlank
+    @Size(min = 4, max = 20)
     private String username;
 
+    @NotBlank
+    @Size(min = 8)
     private String password;
 
     @OneToMany(mappedBy = "owner")
     private List<Project> projects = new ArrayList<>();
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     public User() {
 
     }
 
-    public User(String userName, String password) {
+    public User(Role role) {
+
+        this.role = role;
+    }
+
+    public User(String userName, String password, Role role) {
         this.username = userName;
         this.password = password;
+        this.role = role;
     }
 
     public void addProject(Project project) {
@@ -51,6 +68,10 @@ public class User {
         return password;
     }
 
+    public Role getRole() {
+        return role;
+    }
+
 
     //setters
     public void setUsername(String username) {
@@ -59,5 +80,10 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }

@@ -11,6 +11,8 @@ import com.amir.taskmanager.model.User;
 import com.amir.taskmanager.service.TaskService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,8 +30,8 @@ public class TaskController {
     }
 
     @GetMapping("/tasks")
-    public List<Task> getTasks() {
-        return taskService.getAllTasks();
+    public Page<Task> getTasks(Pageable pageable) {
+        return taskService.getAllTasks(pageable);
     }
 
     @PostMapping("/tasks")
@@ -40,6 +42,7 @@ public class TaskController {
         return taskService.createTask(request);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/tasks/{id}")
     public TaskResponse getTaskById(@PathVariable Long id) {
         return taskService.getTaskResponseById(id);
@@ -72,6 +75,18 @@ public class TaskController {
     @GetMapping("/info")
     public AppProperties getInfo() {
         return appProperties;
+    }
+
+    @GetMapping("/tasks/admin")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String adminOnly() {
+        return "Hello Admin!";
+    }
+
+    @GetMapping("/tasks/user")
+    @PreAuthorize("hasRole('USER')")
+    public String userOnly() {
+        return "Hello User!";
     }
 
     @PutMapping("/tasks/{id}")

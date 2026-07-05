@@ -9,6 +9,7 @@ import com.amir.taskmanager.model.Project;
 import com.amir.taskmanager.model.Task;
 import com.amir.taskmanager.repository.ProjectRepository;
 import com.amir.taskmanager.repository.TaskRepository;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import org.springframework.data.domain.Page;
@@ -56,8 +57,8 @@ public class TaskService {
     }
 
     // READ ALL (CRUD)
-    public List<Task> getAllTasks() {
-        return taskRepository.findAll();
+    public Page<Task> getAllTasks(Pageable pageable) {
+        return taskRepository.findAll(pageable);
     }
 
 
