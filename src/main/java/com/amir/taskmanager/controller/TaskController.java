@@ -2,6 +2,7 @@ package com.amir.taskmanager.controller;
 
 import com.amir.taskmanager.config.AppConfig;
 import com.amir.taskmanager.config.AppProperties;
+import com.amir.taskmanager.dto.ApiResponse;
 import com.amir.taskmanager.dto.CreateTaskRequest;
 import com.amir.taskmanager.dto.TaskResponse;
 import com.amir.taskmanager.dto.UpdateTaskRequest;
@@ -44,8 +45,12 @@ public class TaskController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/tasks/{id}")
-    public TaskResponse getTaskById(@PathVariable Long id) {
-        return taskService.getTaskResponseById(id);
+    public ApiResponse<TaskResponse> getTaskById(@PathVariable Long id) {
+        return new ApiResponse<>(
+                true,
+                "Task fetched seccessfully",
+                taskService.getTaskResponseById(id)
+        );
     }
 
     @GetMapping("/tasks/page")
