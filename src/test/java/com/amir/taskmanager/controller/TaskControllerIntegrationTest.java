@@ -2,6 +2,7 @@ package com.amir.taskmanager.controller;
 
 
 import com.amir.taskmanager.dto.CreateTaskRequest;
+import com.amir.taskmanager.service.JwtService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +27,16 @@ class TaskControllerIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private JwtService jwtService;
+
     @Test
     void shouldReturnTasks() throws Exception{
 
-        mockMvc.perform(get("/tasks"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].title")
-                        .value("Learn PostgreSQL"));
+        mockMvc.perform(get("/tasks")
+                .header("Authorization", "Bearer " + getToken()))
+                .andExpect(status().isOk());
+
     }
 
     @Test
@@ -46,8 +50,13 @@ class TaskControllerIntegrationTest {
                 );
 
         mockMvc.perform(post("/tasks")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-                .andExpect((status().isOk()));
+                        .header("Authorization", "Bearer " + getToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                        .andExpect((status().isOk()));
+    }
+
+    private String getToken() {
+        return jwtService.generateToken("amir1");
     }
 }

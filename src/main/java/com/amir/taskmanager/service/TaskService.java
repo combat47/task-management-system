@@ -10,6 +10,7 @@ import com.amir.taskmanager.model.Task;
 import com.amir.taskmanager.repository.ProjectRepository;
 import com.amir.taskmanager.repository.TaskRepository;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import org.springframework.data.domain.Page;
@@ -51,13 +52,14 @@ public class TaskService {
         task.setProject(project);
 
         logger.info("Creating task with title: {}", request.title());
-        logger.debug("Debug: createTask() called");
+        logger.info("Task created successfully with id: {}", task.getId());
 
         return taskRepository.save(task);
     }
 
     // READ ALL (CRUD)
     public Page<Task> getAllTasks(Pageable pageable) {
+
         return taskRepository.findAll(pageable);
     }
 
@@ -97,6 +99,8 @@ public class TaskService {
     public void deleteTask (Long id) {
         logger.info("Deleting Task {}", id);
         taskRepository.deleteById(id);
+        logger.warn("Deleting task with id {}", id);
+        logger.error("Task not found with id {}", id);
     }
 
 
