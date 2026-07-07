@@ -5,12 +5,12 @@ import com.amir.taskmanager.dto.TaskResponse;
 import com.amir.taskmanager.dto.UpdateTaskRequest;
 import com.amir.taskmanager.enums.TaskStatus;
 import com.amir.taskmanager.exception.TaskNotFoundException;
+import com.amir.taskmanager.mapper.TaskMapper;
 import com.amir.taskmanager.model.Project;
 import com.amir.taskmanager.model.Task;
 import com.amir.taskmanager.repository.ProjectRepository;
 import com.amir.taskmanager.repository.TaskRepository;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import org.springframework.data.domain.Page;
@@ -30,10 +30,13 @@ public class TaskService {
 
     private final ProjectRepository projectRepository;
 
-    public TaskService(TaskRepository taskRepository, ProjectRepository projectRepository) {
+    private final TaskMapper taskMapper;
+
+    public TaskService(TaskRepository taskRepository, ProjectRepository projectRepository, TaskMapper taskMapper) {
         this.taskRepository = taskRepository;
 
         this.projectRepository = projectRepository;
+        this.taskMapper = taskMapper;
     }
 
     // CREATE (CRUD)
@@ -78,7 +81,7 @@ public class TaskService {
     public TaskResponse getTaskResponseById(Long id) {
         Task task = getTaskById(id);
 
-        return mapToResponse(task);
+        return taskMapper.toResponse(task);
     }
 
 

@@ -10,9 +10,12 @@ import com.amir.taskmanager.model.Project;
 import com.amir.taskmanager.model.Task;
 import com.amir.taskmanager.model.User;
 import com.amir.taskmanager.service.TaskService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +33,10 @@ public class TaskController {
         this.appProperties = appProperties;
     }
 
+    @Operation(
+            summary = "Get All Tasks",
+            description = "Returns paginated list of tasks"
+    )
     @GetMapping("/tasks")
     public Page<Task> getTasks(Pageable pageable) {
         return taskService.getAllTasks(pageable);
@@ -103,8 +110,9 @@ public class TaskController {
     }
 
     @DeleteMapping("/tasks/{id}")
-    public void deleteTask(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
         taskService.deleteTask(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/tasks/{id}/done")
