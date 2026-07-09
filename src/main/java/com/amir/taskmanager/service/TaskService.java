@@ -10,6 +10,8 @@ import com.amir.taskmanager.model.Project;
 import com.amir.taskmanager.model.Task;
 import com.amir.taskmanager.repository.ProjectRepository;
 import com.amir.taskmanager.repository.TaskRepository;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -32,11 +34,14 @@ public class TaskService {
 
     private final TaskMapper taskMapper;
 
-    public TaskService(TaskRepository taskRepository, ProjectRepository projectRepository, TaskMapper taskMapper) {
+    private final Counter createdTaskCounter;
+
+    public TaskService(TaskRepository taskRepository, ProjectRepository projectRepository, TaskMapper taskMapper, MeterRegistry meterRegistry) {
         this.taskRepository = taskRepository;
 
         this.projectRepository = projectRepository;
         this.taskMapper = taskMapper;
+        this.createdTaskCounter = meterRegistry.counter("tasks.created");
     }
 
     // CREATE (CRUD)
@@ -56,6 +61,8 @@ public class TaskService {
 
         logger.info("Creating task with title: {}", request.title());
         logger.info("Task created successfully with id: {}", task.getId());
+
+        createdTaskCounter.increment();
 
         return taskRepository.save(task);
     }
