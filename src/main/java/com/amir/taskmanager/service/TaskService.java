@@ -12,6 +12,9 @@ import com.amir.taskmanager.repository.ProjectRepository;
 import com.amir.taskmanager.repository.TaskRepository;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -85,14 +88,16 @@ public class TaskService {
                 });
     }
 
+    @Cacheable("tasks")
     public TaskResponse getTaskResponseById(Long id) {
         Task task = getTaskById(id);
-
         return taskMapper.toResponse(task);
     }
 
 
     // UPDATE (CRUD)
+
+    @CachePut(value = "tasks", key = "#id")
     public Task updateTask(Long id, UpdateTaskRequest request) {
 
         Task task = getTaskById(id);
@@ -106,6 +111,8 @@ public class TaskService {
 
 
     //DELETE (CRUD)
+
+    @CacheEvict(value = "tasks", key = "#id")
     public void deleteTask (Long id) {
         logger.info("Deleting Task {}", id);
         taskRepository.deleteById(id);
