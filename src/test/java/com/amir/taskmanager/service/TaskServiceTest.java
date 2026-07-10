@@ -1,10 +1,13 @@
 package com.amir.taskmanager.service;
 
 import com.amir.taskmanager.dto.CreateTaskRequest;
+import com.amir.taskmanager.mapper.TaskMapper;
 import com.amir.taskmanager.model.Project;
 import com.amir.taskmanager.model.Task;
 import com.amir.taskmanager.repository.TaskRepository;
 import com.amir.taskmanager.repository.ProjectRepository;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,6 +30,15 @@ public class TaskServiceTest {
 
     @Mock
     private ProjectRepository projectRepository;
+
+    @Mock
+    private TaskMapper taskMapper;
+
+    @Mock
+    private MeterRegistry meterRegistry;
+
+    @Mock
+    private Counter counter;
 
     @InjectMocks
     private TaskService taskService;
@@ -68,6 +80,9 @@ public class TaskServiceTest {
         when(taskRepository.save(any(Task.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
+        when(meterRegistry.counter("tasks.created"))
+                .thenReturn(counter);
+
         Task result = taskService.createTask(request);
 
         assertEquals("Docker", result.getTitle());
@@ -75,6 +90,7 @@ public class TaskServiceTest {
 
         verify(projectRepository).findById(1L);
         verify(taskRepository).save(any(Task.class));
+        verify(counter).increment();
     }
 
 

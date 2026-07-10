@@ -37,14 +37,15 @@ public class TaskService {
 
     private final TaskMapper taskMapper;
 
-    private final Counter createdTaskCounter;
+    private final MeterRegistry meterRegistry;
+
 
     public TaskService(TaskRepository taskRepository, ProjectRepository projectRepository, TaskMapper taskMapper, MeterRegistry meterRegistry) {
         this.taskRepository = taskRepository;
 
         this.projectRepository = projectRepository;
         this.taskMapper = taskMapper;
-        this.createdTaskCounter = meterRegistry.counter("tasks.created");
+        this.meterRegistry = meterRegistry;
     }
 
     // CREATE (CRUD)
@@ -65,7 +66,7 @@ public class TaskService {
         logger.info("Creating task with title: {}", request.title());
         logger.info("Task created successfully with id: {}", task.getId());
 
-        createdTaskCounter.increment();
+        meterRegistry.counter("tasks.created").increment();
 
         return taskRepository.save(task);
     }
