@@ -36,7 +36,7 @@ class TaskControllerIntegrationTest {
 
     @BeforeEach
     void setup() {
-        if (userRepository.findByUsername("amir").isEmpty()) {
+        if (userRepository.findByUsername("amir1").isEmpty()) {
             User user = new User();
             user.setUsername("amir1");
             user.setPassword(passwordEncoder.encode("12345678"));
