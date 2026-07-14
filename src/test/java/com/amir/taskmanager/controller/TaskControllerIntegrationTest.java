@@ -2,8 +2,10 @@ package com.amir.taskmanager.controller;
 
 
 import com.amir.taskmanager.dto.CreateTaskRequest;
+import com.amir.taskmanager.model.Project;
 import com.amir.taskmanager.model.Role;
 import com.amir.taskmanager.model.User;
+import com.amir.taskmanager.repository.ProjectRepository;
 import com.amir.taskmanager.repository.UserRepository;
 import com.amir.taskmanager.service.JwtService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,15 +36,26 @@ class TaskControllerIntegrationTest {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private ProjectRepository projectRepository;
+
     @BeforeEach
     void setup() {
-        if (userRepository.findByUsername("amir1").isEmpty()) {
-            User user = new User();
-            user.setUsername("amir1");
-            user.setPassword(passwordEncoder.encode("12345678"));
-            user.setRole(Role.ADMIN);
+        User user = userRepository.findByUsername("amir1")
+                .orElseGet(() -> {
+                    User u = new User();
+                    u.setUsername("amir1");
+                    u.setPassword(passwordEncoder.encode("12345678"));
+                    u.setRole(Role.ADMIN);
+                    return userRepository.save(u);
+                });
+        if (projectRepository.count() == 0) {
+            Project project = new Project();
+            project.setName("Backend");
 
-            userRepository.save(user);
+            project.setOwner(user);
+
+            projectRepository.save(project);
         }
     }
 

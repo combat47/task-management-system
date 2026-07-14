@@ -63,6 +63,10 @@ public class Project {
         return name;
     }
 
+    public User getOwner() {
+        return owner;
+    }
+
     //Setters
 
     public void setName(String name) {
@@ -73,7 +77,9 @@ public class Project {
         this.id = id;
     }
 
-//    public User getOwner() {
-//        return owner;
-//    }
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
+
+
 }
